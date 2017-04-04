@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+
+{% block script %}
+<script>
+$(document).ready(function(){
+  loadTweetContainer("tweet-container")
+});
+</script>
+{% endblock script %}
+
+
+{% block content %}
+<div class='row'>
+    <div class='col-sm-3 col-xs-12'>
+        <h1>{{ object.username }} </h1>
+        <p>
+          {% load avatar_tags %}
+          <!-- {% avatar user %}<br/> -->
+          {% avatar user 125 class="img-circle img-responsive" id="user_avatar" %}
+        </p>
+        <hr/>
+        <p>Obserwujących: {{ object.followed_by.all.count }}</p>
+        <p>
+            <a class='btn btn-link' href='{{ object.profile.get_follow_url }}'>
+                    {% if following %}Unfollow{% else %}Follow{% endif %}
+                </a>
+        </p>
+         <hr/>
+          <h3>Obserwowani: <small>{{ object.profile.get_following.count }}</small></h3>
+
+             {% for user in object.profile.get_following %}
+             <a href='/{{ user.username }}'>{{ user.username }}</a><br/>
+             {% empty %}
+             <h4>Nie obserwujesz nikogo.</h4>
+             {% endfor %}
+
+          <hr/>
+          <h3>Obserwowany przez:</h3>
+             {% for profile in object.followed_by.all %}
+             <a href='/{{ profile.user.username }}'>{{ profile.user.username }}</a><br/>
+             {% empty %}
+             <h4>Nikt Cię nie obserwuje.</h4>
+             {% endfor %}
+
+          <hr/>
+
+
+
+    </div>
+    <div class='col-sm-9 col-xs-12'>
+         <h1>Tweets</h1>
+          <div id='tweet-container' data-url='/api/{{ object.username }}/tweet/'>
+
+          </div>
+          <a href='#' id='loadmore'>Load More Tweets</a>
+
+
+
+
+     </div>
+
+</div>
+
+{% endblock content %}
